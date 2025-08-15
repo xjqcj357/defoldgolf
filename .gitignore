@@ -1,0 +1,18 @@
+# Build artifacts
+build/
+
+# Archives
+*.zip
+
+# Editor caches
+**/.cpcache/
+**/.internal/
+
+# Temporary files
+*.log
+*.tmp
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
