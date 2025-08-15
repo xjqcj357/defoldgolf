@@ -1,0 +1,43 @@
+script: "/scripts/skins.gui_script"
+fonts { name: "default" font: "/builtins/fonts/default.font" }
+layers { name: "base" }
+material: "/builtins/materials/gui.material"
+background_color { x: 0.08 y: 0.08 z: 0.08 w: 1 }
+
+nodes {
+  position { x: 639 y: 480 }
+  size { x: 500 y: 70 }
+  color { x: 1 y: 1 z: 1 w: 1 }
+  type: TYPE_TEXT
+  text: "Choose Ball Color"
+  font: "default"
+  id: "title"
+  pivot: PIVOT_CENTER
+  layer: "base"
+}
+nodes {
+  position { x: 200 y: 120 }
+  size { x: 220 y: 60 }
+  color { x: 0.6 y: 0.6 z: 0.6 w: 1 }
+  type: TYPE_BOX
+  id: "btn_back"
+  pivot: PIVOT_CENTER
+  layer: "base"
+}
+nodes {
+  position { x: 200 y: 120 }
+  size { x: 220 y: 60 }
+  color { x: 1 y: 1 z: 1 w: 1 }
+  type: TYPE_TEXT
+  text: "BACK"
+  font: "default"
+  id: "lbl_back"
+  pivot: PIVOT_CENTER
+  layer: "base"
+}
+nodes { id:"sw1" type: TYPE_BOX position{ x:360 y:320 } size{ x:120 y:120 } color{ x:1 y:1 z:1 w:1 } }
+nodes { id:"sw2" type: TYPE_BOX position{ x:540 y:320 } size{ x:120 y:120 } color{ x:1 y:0.2 z:0.2 w:1 } }
+nodes { id:"sw3" type: TYPE_BOX position{ x:720 y:320 } size{ x:120 y:120 } color{ x:0.2 y:1 z:0.2 w:1 } }
+nodes { id:"sw4" type: TYPE_BOX position{ x:900 y:320 } size{ x:120 y:120 } color{ x:0.2 y:0.6 z:1 w:1 } }
+nodes { id:"sw5" type: TYPE_BOX position{ x:450 y:170 } size{ x:120 y:120 } color{ x:1 y:0.9 z:0.2 w:1 } }
+nodes { id:"sw6" type: TYPE_BOX position{ x:810 y:170 } size{ x:120 y:120 } color{ x:0.7 y:0.3 z:0.9 w:1 } }

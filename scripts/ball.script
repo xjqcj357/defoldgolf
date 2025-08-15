@@ -1,0 +1,17 @@
+local globals = require "scripts.globals"
+
+function init(self)
+    go.set("#sprite", "tint", globals.ball_color)
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("reset_ball") then
+        go.set_position(message.position or vmath.vector3(0))
+        msg.post("#collisionobject", "set_linear_velocity", { velocity = vmath.vector3(0) })
+    elseif message_id == hash("set_linear_velocity") then
+        msg.post("#collisionobject", "set_linear_velocity", { velocity = message.velocity or vmath.vector3(0) })
+    elseif message_id == hash("apply_ramp") then
+        local v = vmath.vector3(message.vx or 0, message.vy or 0, 0)
+        msg.post("#collisionobject", "apply_force", { force = v, position = go.get_position() })
+    end
+end

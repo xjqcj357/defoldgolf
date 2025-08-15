@@ -1,0 +1,17 @@
+script: "/scripts/editor.gui_script"
+fonts { name:"default" font:"/builtins/fonts/default.font" }
+layers { name:"base" }
+material: "/builtins/materials/gui.material"
+background_color { x: 0.09 y: 0.09 z: 0.1 w: 1 }
+
+nodes { id: "title" type: TYPE_TEXT position { x: 200 y: 560 } size { x: 600 y: 40 } text: "Level Editor (WIP) – click grid to place" font: "default" pivot: PIVOT_W }
+nodes { id: "btn_back" type: TYPE_BOX position { x: 1140 y: 40 } size { x: 120 y: 50 } color { x: 0.6 y: 0.6 z: 0.6 w: 1 } }
+nodes { id: "btn_back_lbl" type: TYPE_TEXT position { x: 1140 y: 40 } size { x: 120 y: 50 } text: "BACK" font: "default" pivot: PIVOT_CENTER }
+
+nodes { id:"pal_wall" type: TYPE_BOX position{ x:50 y:500 } size{ x:80 y:40 } color{ x:0.8 y:0.8 z:0.8 w:1 } }
+nodes { id:"pal_ramp" type: TYPE_BOX position{ x:50 y:450 } size{ x:80 y:40 } color{ x:0.8 y:0.7 z:0.4 w:1 } }
+nodes { id:"pal_guard" type: TYPE_BOX position{ x:50 y:400 } size{ x:80 y:40 } color{ x:0.9 y:0.4 z:0.4 w:1 } }
+nodes { id:"pal_table" type: TYPE_BOX position{ x:50 y:350 } size{ x:80 y:40 } color{ x:0.6 y:0.4 z:0.25 w:1 } }
+nodes { id:"pal_plant" type: TYPE_BOX position{ x:50 y:300 } size{ x:80 y:40 } color{ x:0.2 y:0.8 z:0.3 w:1 } }
+nodes { id:"pal_chair" type: TYPE_BOX position{ x:50 y:250 } size{ x:80 y:40 } color{ x:0.7 y:0.7 z:0.7 w:1 } }
+nodes { id:"pal_stairs" type: TYPE_BOX position{ x:50 y:200 } size{ x:80 y:40 } color{ x:0.5 y:0.5 z:1.0 w:1 } }

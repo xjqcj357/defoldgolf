@@ -1,0 +1,14 @@
+go.property("dirx", 1)
+go.property("diry", 0)
+go.property("power", 400)
+
+local dir
+function init(self)
+    dir = vmath.normalize(vmath.vector3(self.dirx, self.diry, 0))
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("trigger_response") and message.enter and message.other_group == hash("ball") then
+        msg.post(message.other_id, "apply_ramp", { vx = dir.x * self.power, vy = dir.y * self.power })
+    end
+end

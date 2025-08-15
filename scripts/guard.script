@@ -1,0 +1,57 @@
+local util = require "scripts.util"
+
+function init(self)
+    self.speed = self.speed or 60
+    self.fov_deg = self.fov_deg or 40
+    self.range = self.range or 220
+    self.path = self.path or {}
+    self.target_ix = 1
+    self.forward = vmath.vector3(1,0,0)
+end
+
+local function rotate_towards(self, dir, dt)
+    local t = math.min(dt * 5, 1)
+    self.forward = vmath.normalize(self.forward * (1 - t) + dir * t)
+end
+
+function update(self, dt)
+    if #self.path > 0 then
+        local pos = go.get_position()
+        local tgt = vmath.vector3(self.path[self.target_ix].x, self.path[self.target_ix].y, 0)
+        local to = tgt - pos
+        local dist = vmath.length(to)
+        if dist < 5 then
+            self.target_ix = self.target_ix % #self.path + 1
+        else
+            local dir = vmath.normalize(to)
+            rotate_towards(self, dir, dt)
+            go.set_position(pos + dir * self.speed * dt)
+        end
+    end
+    if self.ball then
+        local bpos = go.get_position(self.ball)
+        local pos = go.get_position()
+        local to_ball = bpos - pos
+        local d = vmath.length(to_ball)
+        if d <= self.range then
+            local ndir = vmath.normalize(to_ball)
+            local facing = vmath.dot(ndir, vmath.normalize(self.forward))
+            local cos_half = math.cos(math.rad(self.fov_deg / 2))
+            if facing >= cos_half then
+                msg.post("/controller#script", "guard_caught")
+            end
+        end
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("setup_guard") then
+        self.speed = message.speed or 60
+        self.fov_deg = message.fov or 40
+        self.range = message.range or 220
+        self.path = message.path or {}
+        self.ball = message.ball or self.ball
+    elseif message_id == hash("set_ball_id") then
+        self.ball = message.ball
+    end
+end

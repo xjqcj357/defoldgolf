@@ -1,0 +1,28 @@
+function init(self)
+    msg.post("/menu#gui", "enable")
+    msg.post("/skins#gui", "disable")
+    msg.post("/editor#gui", "disable")
+    msg.post("/gameplay#level_manager", "disable")
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("ui_start") then
+        msg.post("/menu#gui", "disable")
+        msg.post("/skins#gui", "disable")
+        msg.post("/editor#gui", "disable")
+        msg.post("/gameplay#level_manager", "enable")
+        timer.delay(0, false, function() msg.post("/gameplay#level_manager", "cmd_start_game") end)
+    elseif message_id == hash("ui_skins") then
+        msg.post("/menu#gui", "disable")
+        msg.post("/skins#gui", "enable")
+    elseif message_id == hash("ui_back_from_skins") then
+        msg.post("/skins#gui", "disable")
+        msg.post("/menu#gui", "enable")
+    elseif message_id == hash("level_complete") then
+        msg.post("/gameplay#level_manager", "level_complete")
+    elseif message_id == hash("guard_caught") then
+        msg.post("/gameplay#level_manager", "guard_caught")
+    elseif message_id == hash("stairs_to_floor") then
+        msg.post("/gameplay#level_manager", "stairs_to_floor", { floor = message.floor })
+    end
+end

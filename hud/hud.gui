@@ -1,0 +1,17 @@
+script: "/scripts/hud.gui_script"
+fonts { name:"default" font:"/builtins/fonts/default.font" }
+layers { name:"base" }
+material: "/builtins/materials/gui.material"
+background_color { x: 0 y: 0 z: 0 w: 0 }
+
+nodes {
+  id: "ready"
+  type: TYPE_TEXT
+  position { x: 200 y: 200 z: 0 }
+  size { x: 64 y: 64 z: 0 }
+  color { x: 0.2 y: 0.9 z: 0.3 w: 0 }
+  text: "✓"
+  font: "default"
+  pivot: PIVOT_CENTER
+  layer: "base"
+}

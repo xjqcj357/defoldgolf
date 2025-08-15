@@ -1,0 +1,10 @@
+animations {
+  id: "ball"
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 30
+  flip_vertical: 0
+  flip_horizontal: 0
+  images { image: "/assets/ball16.png" }
+}
+margin: 0
+extrude_borders: 0

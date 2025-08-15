@@ -1,0 +1,30 @@
+[project]
+title = Mini Stealth Golf
+version = 0.1.0
+
+[bootstrap]
+main_collection = /main/main.collectionc
+
+[display]
+width = 1080
+height = 1920
+high_dpi = 0
+vsync = 1
+
+[input]
+game_binding = /input/game.input_bindingc
+
+[physics]
+scale = 1
+type = 2D
+gravity_y = 0
+
+[script]
+shared_state = 1
+
+[render]
+script = /render/camera.render_script
+clear_color_red = 0.09
+clear_color_green = 0.11
+clear_color_blue = 0.14
+clear_color_alpha = 1

@@ -1,0 +1,31 @@
+name: "main"
+instances {
+  id: "controller"
+  prototype: "/gos/controller.go"
+  position { x: 0 y: 0 z: 0 }
+}
+instances {
+  id: "menu"
+  prototype: "/gos/menu.go"
+  position { x: 0 y: 0 z: 0 }
+}
+instances {
+  id: "skins"
+  prototype: "/gos/skins.go"
+  position { x: 0 y: 0 z: 0 }
+}
+instances {
+  id: "gameplay"
+  prototype: "/gos/gameplay.go"
+  position { x: 0 y: 0 z: 0 }
+}
+instances {
+  id: "editor"
+  prototype: "/gos/editor.go"
+  position { x: 0 y: 0 z: 0 }
+}
+instances {
+  id: "hud"
+  prototype: "/gos/hud.go"
+  position { x: 0 y: 0 z: 0 }
+}

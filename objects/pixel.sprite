@@ -1,0 +1,3 @@
+tile_set: "/assets/pixel.atlas"
+default_animation: "pixel"
+material: "/builtins/materials/sprite.material"

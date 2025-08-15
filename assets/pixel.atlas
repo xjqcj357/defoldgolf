@@ -1,0 +1,10 @@
+animations {
+  id: "pixel"
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 30
+  flip_vertical: 0
+  flip_horizontal: 0
+  images { image: "/assets/pixel.png" }
+}
+margin: 0
+extrude_borders: 0

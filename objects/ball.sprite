@@ -1,0 +1,3 @@
+tile_set: "/assets/ball.atlas"
+default_animation: "ball"
+material: "/builtins/materials/sprite.material"

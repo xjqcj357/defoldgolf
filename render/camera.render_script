@@ -1,0 +1,52 @@
+function init(self)
+    self.w = render.get_window_width()
+    self.h = render.get_window_height()
+    self.cam = vmath.vector3(self.w * 0.5, self.h * 0.5, 0)
+    self.clear_color = vmath.vector4(sys.get_config("render.clear_color_red", 0.09),
+                                     sys.get_config("render.clear_color_green", 0.11),
+                                     sys.get_config("render.clear_color_blue", 0.14),
+                                     sys.get_config("render.clear_color_alpha", 1))
+end
+
+function update(self)
+    self.w = render.get_window_width()
+    self.h = render.get_window_height()
+
+    render.set_depth_mask(true)
+    render.clear({[render.BUFFER_COLOR_BIT] = self.clear_color, [render.BUFFER_DEPTH_BIT] = 1, [render.BUFFER_STENCIL_BIT] = 0})
+    render.set_viewport(0, 0, self.w, self.h)
+
+    local proj = vmath.matrix4_orthographic(0, self.w, 0, self.h, -1, 1)
+    render.set_projection(proj)
+
+    -- Translate world so that camera is centered
+    local view = vmath.matrix4()
+    local tx = -self.cam.x + self.w * 0.5
+    local ty = -self.cam.y + self.h * 0.5
+    view.m03 = tx
+    view.m13 = ty
+    render.set_view(view)
+
+    render.enable_state(render.STATE_BLEND)
+    render.set_blend_func(render.BLEND_SRC_ALPHA, render.BLEND_ONE_MINUS_SRC_ALPHA)
+
+    render.draw(self.predicates.gui_pre) -- draw GUI behind (rare)
+    render.draw(self.predicates.tile)
+    render.draw(self.predicates.text)
+    render.draw(self.predicates.particle)
+    render.draw(self.predicates.model) -- unused in 2D but safe
+    render.draw(self.predicates.sprite)
+    render.draw(self.predicates.gui)
+
+    render.disable_state(render.STATE_BLEND)
+end
+
+function on_message(self, message_id, message)
+    if message_id == hash("clear_color") then
+        self.clear_color = message.color
+    elseif message_id == hash("set_camera") then
+        if message.x and message.y then
+            self.cam.x, self.cam.y = message.x, message.y
+        end
+    end
+end

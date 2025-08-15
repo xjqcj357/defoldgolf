@@ -1,0 +1,168 @@
+local globals = require "scripts.globals"
+local util = require "scripts.util"
+local json = require "json"
+
+local LEVELS = {
+    level1 = require "levels.level1",
+    level2 = require "levels.level2",
+    level3 = require "levels.level3",
+    level4 = require "levels.level4",
+}
+
+local FACT = {
+    rect = "#rect_factory",
+    ball = "#ball_factory",
+    hole = "#hole_factory",
+    guard = "#guard_factory",
+    ramp = "#ramp_factory",
+    stairs = "#stairs_factory",
+    scenery = "#scenery_factory",
+}
+
+function init(self)
+    msg.post(".", "acquire_input_focus")
+    self.dragging = false
+    self.ball = nil
+    self.level_name = globals.current_level
+    self.floor_ix = 1
+    self.level_data = nil
+    self.objects = {}
+    self.start_pos = vmath.vector3(100,100,0)
+    self.power_scale = 3.0
+    self.max_power = 600
+    self.guards = {}
+    end
+
+local function spawn(self, factory_url, pos, rot, props, scale)
+    local id = factory.create(factory_url, pos or vmath.vector3(), rot or vmath.quat(), props, scale or 1)
+    table.insert(self.objects, id)
+    return id
+end
+
+local function clear_objects(self)
+    for _, id in ipairs(self.objects) do
+        if go.exists(id) then go.delete(id, true) end
+    end
+    self.objects = {}
+    self.guards = {}
+    self.ball = nil
+end
+
+function load_level(self, name)
+    clear_objects(self)
+    self.level_name = name
+    self.floor_ix = 1
+    local data = LEVELS[name]
+    self.level_data = data
+    local floor = data.floors[self.floor_ix]
+
+    -- Walls
+    for _, w in ipairs(floor.walls or {}) do
+        local id = spawn(self, FACT.rect, vmath.vector3(w.x, w.y, 0))
+        go.set_scale(vmath.vector3(w.w, w.h, 1), id)
+    end
+    -- Hole
+    local hole = floor.hole or { x = 1100, y = 300, r = 10 }
+    local hid = spawn(self, FACT.hole, vmath.vector3(hole.x, hole.y, 0))
+    go.set_scale(vmath.vector3(hole.r*2, hole.r*2, 1), hid)
+    -- Ball
+    self.start_pos = vmath.vector3(floor.start.x, floor.start.y, 0)
+    self.ball = spawn(self, FACT.ball, self.start_pos)
+    -- Guards
+for _, g in ipairs(floor.guards or {}) do
+    local gid = spawn(self, FACT.guard, vmath.vector3(g.x or 100, g.y or 100, 0))
+    if gid then
+        msg.post(gid, "setup_guard", { path = g.path or {}, speed = g.speed or 60, fov = g.fov or 40, range = g.range or 180, ball = self.ball })
+    end
+    table.insert(self.guards, gid)
+end
+-- Ramps
+
+    for _, r in ipairs(floor.ramps or {}) do
+        local rid = spawn(self, FACT.ramp, vmath.vector3(r.x, r.y, 0), nil, { dirx = r.dirx or 1, diry = r.diry or 0, power = r.power or 300 })
+        go.set_scale(vmath.vector3(r.w or 40, r.h or 20, 1), rid)
+    end
+    -- Stairs
+    for _, s in ipairs(floor.stairs or {}) do
+        local sid = spawn(self, FACT.stairs, vmath.vector3(s.x, s.y, 0), nil, { to_floor = s.to_floor })
+        go.set_scale(vmath.vector3(s.w or 40, s.h or 40, 1), sid)
+    end
+    -- Scenery
+    for _, sc in ipairs(floor.scenery or {}) do
+        local sid = spawn(self, FACT.scenery, vmath.vector3(sc.x, sc.y, 0))
+        go.set_scale(vmath.vector3(sc.w or 40, sc.h or 40, 1), sid)
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("cmd_start_game") then
+        load_level(self, self.level_name)
+        return
+    end
+    if message_id == hash("guard_caught") then
+        if self.ball and go.exists(self.ball) then
+            msg.post(self.ball, "reset_ball", { position = self.start_pos })
+        end
+    elseif message_id == hash("stairs_to_floor") then
+        local ix = message.floor or 1
+        if self.level_data and self.level_data.floors[ix] then
+            local name = self.level_name
+            self.level_data.current_floor = ix
+            self.floor_ix = ix
+            load_level(self, name)
+        end
+    elseif message_id == hash("level_complete") then
+        local next_name = self.level_data.next or "level1"
+        load_level(self, next_name)
+    end
+end
+
+local active_touch = nil
+local start_drag = vmath.vector3()
+
+function on_input(self, action_id, action)
+    if action_id == hash("touch") then
+        local p = vmath.vector3(action.x or 0, action.y or 0, 0)
+        if action.pressed and not self.dragging and self.ball then
+            local bpos = go.get_position(self.ball)
+            if vmath.length(p - bpos) < 12 then
+                self.dragging = true
+                active_touch = action.touch_id or 0
+                start_drag = p
+            end
+        elseif self.dragging and action.released then
+            local pull = start_drag - p
+            local len = vmath.length(pull)
+            if len > 0.1 then
+                local dir = pull / len
+                local power = math.min(len * self.power_scale, self.max_power)
+                local vel = dir * power
+                msg.post(self.ball, "set_linear_velocity", { velocity = vmath.vector3(vel.x, vel.y, 0) })
+            end
+            self.dragging = false
+            active_touch = nil
+        end
+    end
+end
+
+function update(self, dt)
+    -- Camera follow
+    if self.ball and go.exists(self.ball) then
+        local bpos = go.get_position(self.ball)
+        self.cam = self.cam or bpos
+        local t = 0.15
+        self.cam = self.cam + (bpos - self.cam) * t
+        msg.post("@render:", "set_camera", { x = self.cam.x, y = self.cam.y })
+
+        -- Ready check
+        local v = physics.get_linear_velocity(self.ball) or vmath.vector3(0,0,0)
+        local speed = vmath.length(v)
+        local ready = (speed < 5.0) and (not self.dragging)
+        -- Convert world -> screen
+        local w = tonumber(sys.get_config("display.width") or "1080")
+        local h = tonumber(sys.get_config("display.height") or "1920")
+        local sx = bpos.x - self.cam.x + w * 0.5
+        local sy = bpos.y - self.cam.y + h * 0.5 + 24
+        msg.post("/hud#gui", "set_ready", { ready = ready, x = sx, y = sy })
+    end
+end

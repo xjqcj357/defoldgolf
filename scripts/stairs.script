@@ -1,0 +1,6 @@
+go.property("to_floor", 1)
+function on_message(self, message_id, message, sender)
+    if message_id == hash("trigger_response") and message.enter and message.other_group == hash("ball") then
+        msg.post("/controller#script", "stairs_to_floor", { floor = self.to_floor })
+    end
+end

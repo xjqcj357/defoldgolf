@@ -1,0 +1,16 @@
+function init(self)
+    msg.post(".", "acquire_input_focus")
+    self.visible = false
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("set_ready") then
+        local node = gui.get_node("ready")
+        if message.ready then
+            gui.set_color(node, vmath.vector4(0.2,0.9,0.3,1))
+            gui.set_position(node, vmath.vector3(message.x or 100, message.y or 100, 0))
+        else
+            local c = gui.get_color(node); c.w = 0; gui.set_color(node, c)
+        end
+    end
+end
