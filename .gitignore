@@ -4,7 +4,7 @@ build/
 # Archives
 *.zip
 
-# Editor caches
+# Editor caches and internal directories
 **/.cpcache/
 **/.internal/
 
