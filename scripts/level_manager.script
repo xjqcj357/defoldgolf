@@ -1,6 +1,5 @@
 local globals = require "scripts.globals"
 local util = require "scripts.util"
-local json = require "json"
 
 local LEVELS = {
     level1 = require "levels.level1",
