@@ -1,5 +1,11 @@
 # Mini Stealth Golf (Defold)
 
+Open this folder in Defold and run. Window 1278x590. Menu + Skins, pull-back putting, walls/ground/hole, guards, ramps, stairs (multi-floor), and a simple editor.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
 This project is a stealth-themed mini-golf prototype built with the [Defold](https://defold.com/) game engine. It features a menu with skins, pull-back putting, walls, ground, holes, guards, ramps, stairs (multi-floor), and a simple editor.
 
 ## Prerequisites
@@ -43,4 +49,3 @@ Contributions, bug reports, and feature requests are welcome!
 3. Submit a pull request describing your modifications.
 
 Please include clear steps to reproduce any issues and screenshots when possible.
-
